@@ -1,0 +1,8 @@
+matrix:
+  include:
+    - language: java
+      jdk: oraclejdk8
+      os: linux
+      script:
+        - chmod +x build_java_subdirectories.sh
+        - ./build_java_subdirectories.sh
