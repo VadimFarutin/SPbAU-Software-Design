@@ -31,7 +31,7 @@ public class EnvironmentImpl implements Environment {
         return entryList;
     }
 
-    class Entry implements Environment.Entry {
+    static class Entry implements Environment.Entry {
         private String key;
         private String value;
 
