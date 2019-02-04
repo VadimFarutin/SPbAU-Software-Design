@@ -148,7 +148,7 @@ public class ParserImpl implements Parser {
         while (!queue.isEmpty()) {
             Character c = queue.peek();
 
-            if (c == ' ') {
+            if (c == ' ' || c == '$') {
                 break;
             }
 

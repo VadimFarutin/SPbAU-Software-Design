@@ -56,7 +56,7 @@ public class EchoCommandTest {
         CommandOutput output = command.execute();
 
         assertTrue(output.getValue().isPresent());
-        output.getValue().ifPresent(v -> assertThat(v, is(first + second)));
+        output.getValue().ifPresent(v -> assertThat(v, is(first + " " + second)));
         assertThat(output.getStatus(), is(SessionStatus.PROCEED));
     }
 }

@@ -5,6 +5,7 @@ import ru.spbau.farutin.homework01.SessionStatus;
 import ru.spbau.farutin.homework01.commands.arguments.Argument;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * echo prints its arguments.
@@ -18,13 +19,13 @@ public class EchoCommand implements Command {
 
     @Override
     public @NotNull CommandOutput execute() throws CommandException {
-        StringBuilder builder = new StringBuilder();
+        StringJoiner joiner = new StringJoiner(" ");
 
         for (Argument argument : arguments) {
-            builder.append(argument.getValue());
+            joiner.add(argument.getValue());
         }
 
-        String data = builder.toString();
+        String data = joiner.toString();
         return new CommandOutput(data, SessionStatus.PROCEED);
     }
 }
