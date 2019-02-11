@@ -15,3 +15,9 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
     compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
 }
+
+task run(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "ru.spbau.farutin.homework01.CLI"
+    standardInput = System.in
+}
