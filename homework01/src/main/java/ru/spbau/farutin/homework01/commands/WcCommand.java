@@ -23,7 +23,7 @@ public class WcCommand implements Command {
 
     @Override
     public @NotNull CommandOutput execute() throws CommandException {
-        StringJoiner joiner = new StringJoiner("\n");
+        StringJoiner joiner = new StringJoiner(System.lineSeparator());
 
         for (Argument argument : arguments) {
             String data;
@@ -39,7 +39,7 @@ public class WcCommand implements Command {
                 data = argument.getValue();
             }
 
-            int linesCnt = data.split("\n").length;
+            int linesCnt = data.split(System.lineSeparator()).length;
             int wordsCnt = data.trim().split("\\s+").length;
             int bytesCnt = data.getBytes().length;
             String result = String.format("%d %d %d", linesCnt, wordsCnt, bytesCnt);

@@ -43,7 +43,7 @@ public class CLITest {
         cli.run();
 
         String output = byteOutputStream.toString();
-        assertThat(output, is("> 42\n> "));
+        assertThat(output, is("> 42" + System.lineSeparator() + "> "));
     }
 
     /**
@@ -67,6 +67,6 @@ public class CLITest {
         cli.run();
 
         String output = byteOutputStream.toString();
-        assertThat(output, is("> exception\n> "));
+        assertThat(output, is("> exception" + System.lineSeparator() + "> "));
     }
 }

@@ -23,7 +23,7 @@ public class CatCommand implements Command {
 
     @Override
     public @NotNull CommandOutput execute() throws CommandException {
-        StringJoiner joiner = new StringJoiner("\n");
+        StringJoiner joiner = new StringJoiner(System.lineSeparator());
 
         for (Argument argument : arguments) {
             String data;
