@@ -5,6 +5,7 @@ import ru.spbau.farutin.homework01.SessionStatus;
 import ru.spbau.farutin.homework01.commands.arguments.Argument;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -25,8 +26,7 @@ public class EchoCommandTest {
         Argument argument = mock(Argument.class);
         when(argument.getValue()).thenReturn(value);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(argument);
+        List<Argument> arguments = Collections.singletonList(argument);
 
         EchoCommand command = new EchoCommand(arguments);
         CommandOutput output = command.execute();

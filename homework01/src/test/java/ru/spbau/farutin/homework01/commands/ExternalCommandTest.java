@@ -28,8 +28,7 @@ public class ExternalCommandTest {
         Argument argument = mock(Argument.class);
         when(argument.getValue()).thenReturn(value);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(argument);
+        List<Argument> arguments = Collections.singletonList(argument);
 
         Environment environment = mock(Environment.class);
 

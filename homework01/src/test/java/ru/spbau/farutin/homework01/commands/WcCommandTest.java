@@ -7,6 +7,7 @@ import ru.spbau.farutin.homework01.commands.arguments.ArgumentSource;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -30,8 +31,7 @@ public class WcCommandTest {
         when(argument.getValue()).thenReturn(path);
         when(argument.getArgumentSource()).thenReturn(ArgumentSource.USER);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(argument);
+        List<Argument> arguments = Collections.singletonList(argument);
 
         WcCommand command = new WcCommand(arguments);
         CommandOutput output = command.execute();
@@ -52,8 +52,7 @@ public class WcCommandTest {
         when(argument.getValue()).thenReturn(input);
         when(argument.getArgumentSource()).thenReturn(ArgumentSource.PIPE);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(argument);
+        List<Argument> arguments = Collections.singletonList(argument);
 
         WcCommand command = new WcCommand(arguments);
         CommandOutput output = command.execute();
@@ -73,8 +72,7 @@ public class WcCommandTest {
         when(argument.getValue()).thenReturn(path);
         when(argument.getArgumentSource()).thenReturn(ArgumentSource.USER);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(argument);
+        List<Argument> arguments = Collections.singletonList(argument);
 
         WcCommand command = new WcCommand(arguments);
         command.execute();

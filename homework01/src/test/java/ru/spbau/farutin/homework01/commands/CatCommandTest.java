@@ -6,6 +6,7 @@ import ru.spbau.farutin.homework01.commands.arguments.Argument;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -28,8 +29,7 @@ public class CatCommandTest {
         Argument argument = mock(Argument.class);
         when(argument.getValue()).thenReturn(path);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(argument);
+        List<Argument> arguments = Collections.singletonList(argument);
 
         CatCommand command = new CatCommand(arguments);
         CommandOutput output = command.execute();
@@ -48,8 +48,7 @@ public class CatCommandTest {
         Argument keyArgument = mock(Argument.class);
         when(keyArgument.getValue()).thenReturn(path);
 
-        List<Argument> arguments = new ArrayList<>();
-        arguments.add(keyArgument);
+        List<Argument> arguments = Collections.singletonList(keyArgument);
 
         CatCommand command = new CatCommand(arguments);
         command.execute();
