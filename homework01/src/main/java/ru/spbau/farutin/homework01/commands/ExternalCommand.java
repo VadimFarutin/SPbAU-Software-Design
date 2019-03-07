@@ -60,7 +60,12 @@ public class ExternalCommand implements Command {
 
         InputStream inputStream = process.getInputStream();
         Scanner scanner = new Scanner(inputStream);
-        String result = scanner.useDelimiter("\\A").next();
+        scanner.useDelimiter("\\A");
+
+        String result = "";
+        if (scanner.hasNext()) {
+            result = scanner.next();
+        }
 
         return new CommandOutput(result, SessionStatus.PROCEED);
     }
