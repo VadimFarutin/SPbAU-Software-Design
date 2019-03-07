@@ -35,6 +35,10 @@ public class ParserImpl implements Parser {
             queue.add(c);
         }
 
+        Set<Character> variableValueDelimiters = Collections.emptySet();
+        Set<Character> commandArgumentDelimiters = new HashSet<>(Collections.singletonList(' '));
+        Set<Character> commandNameDelimiters = new HashSet<>(Arrays.asList(' ', '='));
+
         Optional<Command> lastCommand = Optional.empty();
         List<Argument> arguments = new ArrayList<>();
         String name = null;
@@ -49,14 +53,16 @@ public class ParserImpl implements Parser {
             }
 
             if (state == ParserState.READING_NAME) {
-                name = readName(queue);
+                name = readCommandToken(queue, commandNameDelimiters);
                 state = ParserState.READING_ARGUMENTS;
                 continue;
             }
 
             if (c == '=') {
+                queue.poll();
                 StringArgument key = new StringArgument(name);
-                StringArgument value = new StringArgument(readVariableValue(queue));
+                StringArgument value = new StringArgument(
+                        readVariableToken(queue, variableValueDelimiters));
                 arguments.add(key);
                 arguments.add(value);
                 name = "=";
@@ -66,9 +72,14 @@ public class ParserImpl implements Parser {
                 arguments = new ArrayList<>();
                 state = ParserState.READING_NAME;
             } else {
-                StringArgument argument = new StringArgument(readArgument(queue));
+                StringArgument argument = new StringArgument(
+                        readCommandToken(queue, commandArgumentDelimiters));
                 arguments.add(argument);
             }
+        }
+
+        if (state == ParserState.READING_NAME) {
+            throw new ParserException("Missing command name");
         }
 
         return makeCommand(name, arguments, lastCommand);
@@ -80,6 +91,7 @@ public class ParserImpl implements Parser {
             queue.add(c);
         }
 
+        Set<Character> variableNameDelimiters = new HashSet<>(Arrays.asList(' ', '$', '\"'));
         StringBuilder stringBuilder = new StringBuilder();
 
         while (!queue.isEmpty()) {
@@ -87,10 +99,11 @@ public class ParserImpl implements Parser {
 
             if (c == '\'') {
                 stringBuilder.append('\'')
-                             .append(readSingleQuotesContent(queue))
+                             .append(readQuotesContent(queue, '\''))
                              .append('\'');
             } else if (c == '$') {
-                String variable = readVariableName(queue);
+                queue.poll();
+                String variable = readVariableToken(queue, variableNameDelimiters);
                 Optional<String> value = environment.get(variable);
                 String stringValue = value.orElseThrow(
                         () -> new ParserException(String.format("Unknown variable name %s", variable)));
@@ -107,99 +120,60 @@ public class ParserImpl implements Parser {
         queue.poll();
     }
 
-    private String readSingleQuotesContent(Queue<Character> queue) {
+    private String readQuotesContent(Queue<Character> queue, char quote) throws ParserException {
         queue.poll();
         StringBuilder stringBuilder = new StringBuilder();
+        boolean pairFound = false;
 
         while (!queue.isEmpty()) {
             Character c = queue.poll();
+
+            if (c == quote) {
+                pairFound = true;
+                break;
+            }
+
+            stringBuilder.append(c);
+        }
+
+        if (!pairFound) {
+            throw new ParserException("Missing pair quote");
+        }
+
+        return stringBuilder.toString();
+    }
+
+    private String readVariableToken(Queue<Character> queue, Set<Character> delimiters) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while (!queue.isEmpty()) {
+            Character c = queue.peek();
+
+            if (delimiters.contains(c)) {
+                break;
+            }
+
+            stringBuilder.append(c);
+            queue.poll();
+        }
+
+        return stringBuilder.toString();
+    }
+
+    private String readCommandToken(Queue<Character> queue, Set<Character> delimiters) throws ParserException {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while (!queue.isEmpty()) {
+            Character c = queue.peek();
+
+            if (delimiters.contains(c)) {
+                break;
+            }
 
             if (c == '\'') {
-                break;
-            }
-
-            stringBuilder.append(c);
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private String readDoubleQuotesContent(Queue<Character> queue) {
-        queue.poll();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while (!queue.isEmpty()) {
-            Character c = queue.poll();
-
-            if (c == '\"') {
-                break;
-            }
-
-            stringBuilder.append(c);
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private String readVariableName(Queue<Character> queue) {
-        queue.poll();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while (!queue.isEmpty()) {
-            Character c = queue.peek();
-
-            if (c == ' ' || c == '$') {
-                break;
-            }
-
-            stringBuilder.append(c);
-            queue.poll();
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private String readVariableValue(Queue<Character> queue) {
-        queue.poll();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while (!queue.isEmpty()) {
-            Character c = queue.poll();
-            stringBuilder.append(c);
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private String readName(Queue<Character> queue) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while (!queue.isEmpty()) {
-            Character c = queue.peek();
-
-            if (c == ' ' || c == '=') {
-                break;
-            }
-
-            queue.poll();
-            stringBuilder.append(c);
-        }
-
-        return stringBuilder.toString();
-    }
-
-    private String readArgument(Queue<Character> queue) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while (!queue.isEmpty()) {
-            Character c = queue.peek();
-
-            if (c == ' ') {
-                break;
-            } else if (c == '\'') {
-                stringBuilder.append(readSingleQuotesContent(queue));
+                stringBuilder.append(readQuotesContent(queue, '\''));
             } else if (c == '\"') {
-                stringBuilder.append(readDoubleQuotesContent(queue));
+                stringBuilder.append(readQuotesContent(queue, '\"'));
             } else {
                 stringBuilder.append(readCharacter(queue));
             }
