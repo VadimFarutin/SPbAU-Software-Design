@@ -3,7 +3,7 @@ package ru.spbau.farutin.homework01.commands;
 import org.jetbrains.annotations.NotNull;
 import ru.spbau.farutin.homework01.SessionStatus;
 import ru.spbau.farutin.homework01.commands.arguments.Argument;
-import ru.spbau.farutin.homework01.commands.arguments.IllegalArgumentException;
+import ru.spbau.farutin.homework01.commands.arguments.ArgumentSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,13 +26,20 @@ public class CatCommand implements Command {
         StringJoiner joiner = new StringJoiner("\n");
 
         for (Argument argument : arguments) {
-            String path = argument.getValue();
-            try {
-                String data = new String(Files.readAllBytes(Paths.get(path)));
-                joiner.add(data);
-            } catch (IOException e) {
-                throw new FileIOException(String.format("Failed to read from file %s.", path));
+            String data;
+
+            if (argument.getArgumentSource() == ArgumentSource.USER) {
+                String path = argument.getValue();
+                try {
+                    data = new String(Files.readAllBytes(Paths.get(path)));
+                } catch (IOException e) {
+                    throw new FileIOException(String.format("Failed to read from file %s", path));
+                }
+            } else {
+                data = argument.getValue();
             }
+
+            joiner.add(data);
         }
 
         return new CommandOutput(joiner.toString(), SessionStatus.PROCEED);
