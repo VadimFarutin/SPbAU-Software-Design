@@ -3,6 +3,7 @@ package ru.spbau.farutin.homework01.commands;
 import org.junit.Test;
 import ru.spbau.farutin.homework01.SessionStatus;
 import ru.spbau.farutin.homework01.commands.arguments.Argument;
+import ru.spbau.farutin.homework01.commands.arguments.ArgumentSource;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class CatCommandTest {
         String content = "Some example text";
         Argument argument = mock(Argument.class);
         when(argument.getValue()).thenReturn(path);
+        when(argument.getArgumentSource()).thenReturn(ArgumentSource.USER);
 
         List<Argument> arguments = Collections.singletonList(argument);
 
@@ -47,6 +49,7 @@ public class CatCommandTest {
         String path = "wrong_path";
         Argument keyArgument = mock(Argument.class);
         when(keyArgument.getValue()).thenReturn(path);
+        when(keyArgument.getArgumentSource()).thenReturn(ArgumentSource.USER);
 
         List<Argument> arguments = Collections.singletonList(keyArgument);
 
