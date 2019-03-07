@@ -1,9 +1,6 @@
 # Build
 `./gradlew build`
 
-# Run
-`./gradlew run`
-
 # Архитектура 
 <img src="https://github.com/VadimFarutin/SPbAU-Software-Design/blob/homework01/homework01/CLI_arch.png" width="1106" height="780">
 
