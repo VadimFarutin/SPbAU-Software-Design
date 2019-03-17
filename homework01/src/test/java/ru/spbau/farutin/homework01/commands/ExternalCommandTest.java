@@ -24,7 +24,7 @@ public class ExternalCommandTest {
      */
     @Test
     public void testExecuteExisting() throws Exception {
-        String name = "cmd";
+        String name = "cmd.exe";
         Argument argument1 = mock(Argument.class);
         when(argument1.getValue()).thenReturn("/c");
         Argument argument2 = mock(Argument.class);
