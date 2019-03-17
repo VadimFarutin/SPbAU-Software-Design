@@ -91,13 +91,18 @@ public class ParserImpl implements Parser {
             queue.add(c);
         }
 
-        Set<Character> variableNameDelimiters = new HashSet<>(Arrays.asList(' ', '$', '\"'));
+        Set<Character> variableNameDelimiters = new HashSet<>(Arrays.asList(' ', '$', '\"', '\''));
         StringBuilder stringBuilder = new StringBuilder();
+        boolean doubleQuoteOpened = false;
 
         while (!queue.isEmpty()) {
             Character c = queue.peek();
 
-            if (c == '\'') {
+            if (c == '\"') {
+                doubleQuoteOpened = !doubleQuoteOpened;
+            }
+
+            if (c == '\'' && !doubleQuoteOpened) {
                 stringBuilder.append('\'')
                              .append(readQuotesContent(queue, '\''))
                              .append('\'');
