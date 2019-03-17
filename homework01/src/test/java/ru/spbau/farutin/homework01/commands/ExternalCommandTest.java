@@ -6,6 +6,7 @@ import ru.spbau.farutin.homework01.commands.arguments.Argument;
 import ru.spbau.farutin.homework01.environment.Environment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,12 +24,15 @@ public class ExternalCommandTest {
      */
     @Test
     public void testExecuteExisting() throws Exception {
-        String name = "echo";
-        String value = "hello";
-        Argument argument = mock(Argument.class);
-        when(argument.getValue()).thenReturn(value);
+        String name = "cmd";
+        Argument argument1 = mock(Argument.class);
+        when(argument1.getValue()).thenReturn("/c");
+        Argument argument2 = mock(Argument.class);
+        when(argument2.getValue()).thenReturn("echo");
+        Argument argument3 = mock(Argument.class);
+        when(argument3.getValue()).thenReturn("hello");
 
-        List<Argument> arguments = Collections.singletonList(argument);
+        List<Argument> arguments = Arrays.asList(argument1, argument2, argument3);
 
         Environment environment = mock(Environment.class);
 
@@ -36,7 +40,7 @@ public class ExternalCommandTest {
         CommandOutput output = command.execute();
 
         assertTrue(output.getValue().isPresent());
-        output.getValue().ifPresent(v -> assertThat(v, is(value + "\n")));
+        output.getValue().ifPresent(v -> assertThat(v, is( "hello" + System.lineSeparator())));
         assertThat(output.getStatus(), is(SessionStatus.PROCEED));
     }
 
