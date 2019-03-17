@@ -52,21 +52,32 @@ public class ExternalCommand implements Command {
         }
         while (true) {
             try {
-                process.waitFor();
+                int exitValue = process.waitFor();
+                if (exitValue != 0) {
+                    throw new SubprocessException(
+                        "Failed to execute subprocess: " + name +
+                        ". Exit value: " + exitValue +
+                        ". Reason: " + readAll(process.getErrorStream()));
+                }
                 break;
             } catch (InterruptedException ignored) {
             }
         }
 
-        InputStream inputStream = process.getInputStream();
+        String result = readAll(process.getInputStream());
+        return new CommandOutput(result, SessionStatus.PROCEED);
+    }
+
+    private static @NotNull String readAll(@NotNull InputStream inputStream) {
         Scanner scanner = new Scanner(inputStream);
         scanner.useDelimiter("\\A");
 
         String result = "";
+
         if (scanner.hasNext()) {
             result = scanner.next();
         }
 
-        return new CommandOutput(result, SessionStatus.PROCEED);
+        return result;
     }
 }
