@@ -24,15 +24,26 @@ public class ExternalCommandTest {
      */
     @Test
     public void testExecuteExisting() throws Exception {
-        String name = "cmd.exe";
-        Argument argument1 = mock(Argument.class);
-        when(argument1.getValue()).thenReturn("/c");
-        Argument argument2 = mock(Argument.class);
-        when(argument2.getValue()).thenReturn("echo");
-        Argument argument3 = mock(Argument.class);
-        when(argument3.getValue()).thenReturn("hello");
+        String name;
+        List<Argument> arguments;
 
-        List<Argument> arguments = Arrays.asList(argument1, argument2, argument3);
+        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            name = "cmd.exe";
+            Argument argument1 = mock(Argument.class);
+            when(argument1.getValue()).thenReturn("/c");
+            Argument argument2 = mock(Argument.class);
+            when(argument2.getValue()).thenReturn("echo");
+            Argument argument3 = mock(Argument.class);
+            when(argument3.getValue()).thenReturn("hello");
+
+            arguments = Arrays.asList(argument1, argument2, argument3);
+        } else {
+            name = "echo";
+            Argument argument = mock(Argument.class);
+            when(argument.getValue()).thenReturn("hello");
+
+            arguments = Collections.singletonList(argument);
+        }
 
         Environment environment = mock(Environment.class);
 
