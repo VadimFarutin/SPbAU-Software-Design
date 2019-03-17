@@ -60,15 +60,20 @@ public class GrepCommand implements Command {
                 }
             } else {
                 String data = namespace.getString("file");
-                lines = Arrays.asList(data.split("\n"));
+                lines = Arrays.asList(data.split(System.lineSeparator()));
+            }
+
+            int followingLinesNumber = namespace.getInt("A");
+            if (followingLinesNumber < 0) {
+                throw new IllegalArgumentException("-A argument expected to be non negative");
             }
 
             List<String> selectedLines = matchLines(lines,
                                                     namespace.getString("regex"),
                                                     namespace.getBoolean("i"),
                                                     namespace.getBoolean("w"),
-                                                    namespace.getInt("A"));
-            StringJoiner joiner = new StringJoiner("\n");
+                                                    followingLinesNumber);
+            StringJoiner joiner = new StringJoiner(System.lineSeparator());
 
             for (String line : selectedLines) {
                 joiner.add(line);
@@ -89,13 +94,14 @@ public class GrepCommand implements Command {
                                              int followingLinesNumber) {
         List<String> selectedLines = new ArrayList<>();
         int patternFlag = caseInsensitive ? Pattern.CASE_INSENSITIVE : 0;
+        if (searchWholeWord) {
+            regex = "\\b" + regex + "\\b";
+        }
         Pattern pattern = Pattern.compile(regex, patternFlag);
         int linesToTake = 0;
 
         for (String line : lines) {
-            boolean matched = searchWholeWord
-                              ? containsWord(line, pattern)
-                              : containsSubstring(line, pattern);
+            boolean matched = containsSubstring(line, pattern);
 
             if (matched) {
                 selectedLines.add(line);

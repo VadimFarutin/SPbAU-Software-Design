@@ -84,7 +84,7 @@ public class GrepCommandTest {
      */
     @Test
     public void testNoIgnoreCase() throws Exception {
-        String data = "hello\nhallo\nhi, world!\nheLlO\nhell0";
+        String data = "hello" + System.lineSeparator() + "hallo" + System.lineSeparator() + "hi, world!" + System.lineSeparator() + "heLlO" + System.lineSeparator() + "hell0";
         String regex = "heLlO";
         String expected = "heLlO";
 
@@ -105,9 +105,9 @@ public class GrepCommandTest {
      */
     @Test
     public void testIgnoreCase() throws Exception {
-        String data = "hello\nhallo\nhi, world!\nheLlO\nhell0";
+        String data = "hello" + System.lineSeparator() + "hallo" + System.lineSeparator() + "hi, world!" + System.lineSeparator() + "heLlO" + System.lineSeparator() + "hell0";
         String regex = "heLlO";
-        String expected = "hello\nheLlO";
+        String expected = "hello" + System.lineSeparator() + "heLlO";
 
         List<Argument> arguments = Arrays.asList(
                 mockUserArgument(regex),
@@ -127,9 +127,9 @@ public class GrepCommandTest {
      */
     @Test
     public void testNoWholeWord() throws Exception {
-        String data = "hello\nhellooo\nhi, world!\nheLlO\nhell0 hello !";
+        String data = "hello" + System.lineSeparator() + "hellooo" + System.lineSeparator() + "hi, world!" + System.lineSeparator() + "heLlO" + System.lineSeparator() + "hell0 hello !";
         String regex = "hello";
-        String expected = "hello\nhellooo\nhell0 hello !";
+        String expected = "hello" + System.lineSeparator() + "hellooo" + System.lineSeparator() + "hell0 hello !";
 
         List<Argument> arguments = Arrays.asList(
                 mockUserArgument(regex),
@@ -148,9 +148,9 @@ public class GrepCommandTest {
      */
     @Test
     public void testWholeWord() throws Exception {
-        String data = "hello\nhellooo\nhi, world!\nheLlO\nhell0 hello !";
+        String data = "hello" + System.lineSeparator() + "hellooo" + System.lineSeparator() + "hi, world!" + System.lineSeparator() + "heLlO" + System.lineSeparator() + "hell0 hello !";
         String regex = "hello";
-        String expected = "hello\nhell0 hello !";
+        String expected = "hello" + System.lineSeparator() + "hell0 hello !";
 
         List<Argument> arguments = Arrays.asList(
                 mockUserArgument(regex),
@@ -165,18 +165,17 @@ public class GrepCommandTest {
         assertThat(output.getStatus(), is(SessionStatus.PROCEED));
     }
 
-
     /**
      * Testing with A flag.
      */
     @Test
     public void testFollowingLines() throws Exception {
-        String data = "hello\nhellnooo\nhi, world!\nheLlO\n" +
-                      "hell0 hello !\nhello\nabc\nxyz\n" +
+        String data = "hello" + System.lineSeparator() + "hellnooo" + System.lineSeparator() + "hi, world!" + System.lineSeparator() + "heLlO" + System.lineSeparator() + "" +
+                      "hell0 hello !" + System.lineSeparator() + "hello" + System.lineSeparator() + "abc" + System.lineSeparator() + "xyz" + System.lineSeparator() + "" +
                       "hhelloo";
         String regex = "hello";
-        String expected = "hello\nhellnooo\nhi, world!\n" +
-                          "hell0 hello !\nhello\nabc\nxyz\n" +
+        String expected = "hello" + System.lineSeparator() + "hellnooo" + System.lineSeparator() + "hi, world!" + System.lineSeparator() + "" +
+                          "hell0 hello !" + System.lineSeparator() + "hello" + System.lineSeparator() + "abc" + System.lineSeparator() + "xyz" + System.lineSeparator() + "" +
                           "hhelloo";
 
         List<Argument> arguments = Arrays.asList(
