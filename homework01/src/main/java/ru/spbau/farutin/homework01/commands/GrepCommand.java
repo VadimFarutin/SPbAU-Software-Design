@@ -118,16 +118,4 @@ public class GrepCommand implements Command {
     private boolean containsSubstring(@NotNull String line, @NotNull Pattern pattern) {
         return pattern.matcher(line).find();
     }
-
-    private boolean containsWord(@NotNull String line, @NotNull Pattern pattern) {
-        String[] words = line.split("\\s+");
-
-        for (String word : words) {
-            if (pattern.matcher(word).matches()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
