@@ -1,0 +1,7 @@
+FROM python:3.5.1
+WORKDIR .
+ENV AWS_DEFAULT_REGION eu-central-1
+ENV AWS_ACCESS_KEY_ID id
+ENV AWS_SECRET_ACCESS_KEY key
+RUN pip install boto3
+COPY . .
