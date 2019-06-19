@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  localstack:
+    image: localstack/localstack:0.9.4
+    ports:
+      - "4576:4576"
+    environment:
+      - SERVICES=sqs
+
+  init:
+    build: .
+    command: ["python", "init.py"]
+    depends_on:
+      - localstack
+    links:
+      - localstack
+
+  enqueue-a:
+    build: .
+    command: ["python", "enqueue.py", "A", "B"]
+    depends_on:
+      - init
+
+  enqueue-b:
+    build: .
+    command: ["python", "enqueue.py", "B", "A"]
+    depends_on:
+      - init
