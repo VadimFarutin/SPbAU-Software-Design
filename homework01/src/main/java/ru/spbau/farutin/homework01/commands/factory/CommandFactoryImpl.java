@@ -34,6 +34,8 @@ public class CommandFactoryImpl implements CommandFactory {
             return new PwdCommand(arguments);
         } else if (name.equals("exit")) {
             return new ExitCommand(arguments);
+        } else if (name.equals("grep")) {
+            return new GrepCommand(arguments);
         }
 
         return new ExternalCommand(name, arguments, environment);
